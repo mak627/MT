@@ -7,15 +7,24 @@ graphReader = nk.graphio.EdgeListReader(separator=" ", firstNode = 0)
 G = graphReader.read("/home/bk247056/Desktop/gap-mk/gapbs/inputs/GAP-web.wel")
 
 
-print("********************")
+print("***********************")
 print("Input Graph: cit-patent")
 nk.overview(G)
-print("********************")
+print("***********************")
+
+oldMinEdgeCount = 0
+oldMaxEdgeCount = 8563816
+newMinEdgeCount = 1
+newMaxEdgeCount = 15
+oldRange = oldMaxEdgeCount - oldMinEdgeCount
+newRange = newMaxEdgeCount - newMinEdgeCount
 
 degree_seq = nk.centrality.DegreeCentrality(G).run().scores()
 degree_cnt = Counter(degree_seq)
 X_deg, Y_cnt = zip(*degree_cnt.items())
-X_deg_map = {x:1 + int(x ** (np.log10(100) / (5*np.log10(10)))) for x in X_deg}
+X_deg_map = {x : int(newMinEdgeCount + \
+					10 ** ((np.log10(x -  oldMinEdgeCount)) * (np.log10(newRange) / np.log10(oldRange)))) \
+						for x in X_deg}
 
 G_new = nk.Graph(G.numberOfNodes())
 
